@@ -42,6 +42,7 @@
             @endphp
             {{-- nav logo --}}
             <div class="logo-image">
+                {{-- {{ $logoPath }} --}}
                 <img src="{{ asset($logoPath) }}" alt="Logo">
             </div>
             {{-- Name of website --}}
