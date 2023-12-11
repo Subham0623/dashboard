@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\LogoController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\RegisterController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ActivityLogController;
 
 
 
@@ -32,24 +34,26 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/registration', [RegisterController::class, 'registration'])->name('registration');
 Route::post('/register', [RegisterController::class, 'registerPost']);
 
-// Route::get('/admin/permissions/import', [PermissionController::class, 'import'])->name('admin.permissions.import')->middleware('auth'); 
+// Route::get('/admin/permissions/import', [PermissionController::class, 'import'])->name('admin.permissions.import')->middleware('auth');
 
 // Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth','role:admin']], function () { //if admin role vako lai matra login diney vaye
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth'], function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.dashboard');
     });
-
+    // Logo route
+    Route::resource('logos', LogoController::class);
     Route::get('/permissions/search', [PermissionController::class, 'search'])->name('permissions.search');
     Route::get('/roles/search', [RoleController::class, 'search'])->name('roles.search');
     Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
     Route::get('/activity_log/search', [ActivityLogController::class, 'search'])->name('activity_log.search');
 
-
+    Route::get('/users/profile', [UserController::class, 'profile'])->name('users.profile');
+    Route::post('/users/profileUpdate', [UserController::class, 'profileUpdate'])->name('users.profileUpdate');c:\xampp\htdocs\mango\samriddhi-lms\app\Http\Controllers\Admin\UserController.php
     // Activity Log
-    Route::get('/activity_log', [ActivityLogController::class, 'index'])->name('activity_log.index');
+    Route::get('/activity_log/index/{type}', [ActivityLogController::class, 'index'])->name('activity_log.index');
 
-    // User   
+    // User
     // Route::resource('/users', UserController::class);
     // CRUD
     Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:view_user');
@@ -60,6 +64,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth'], fu
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:edit_user');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('permission:delete_user');
     Route::post('/users/delete-selected', [UserController::class, 'deleteSelected'])->name('users.deleteSelected')->middleware('permission:delete_user');
+    Route::post('/users/{user}/restore', [UserController::class, 'restore'])->name('users.restore')->middleware('permission:delete_user');
+    Route::delete('/users/{user}/force-delete', [UserController::class, 'forceDelete'])->name('users.force-delete')->middleware('permission:delete_user');
     // Import Export Users
     Route::get('/users/import', [UserController::class, 'import'])->name('users.import')->middleware('permission:import_user');
     Route::post('/users/import', [UserController::class, 'importPermission'])->name('users.import.store')->middleware('permission:import_user');
@@ -82,7 +88,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth'], fu
     Route::post('/permissions/import', [PermissionController::class, 'importPermission'])->name('permissions.import.store')->middleware('permission:import_permission');
     Route::post('/permissions/exportpdf', [PermissionController::class, 'exportpdf'])->name('permissions.exportpdf')->middleware('permission:export_permission');
     Route::post('/permissions/exportselectedcsv', [PermissionController::class, 'exportselectedcsv'])->name('permissions.exportselectedcsv')->middleware('permission:export_permission');
-    // Role 
+    // Role
     // Route::resource('/roles', RoleController::class);
     // CRUD
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('permission:view_role');
