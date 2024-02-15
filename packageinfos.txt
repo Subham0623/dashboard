@@ -32,3 +32,15 @@
 5 Activity log geo location
     composer require torann/geoip
     php artisan vendor:publish --provider="Torann\GeoIP\GeoIPServiceProvider" --tag=config
+
+6 PDF Merger
+composer require webklex/laravel-pdfmerger
+'providers' => [
+    ...
+    Webklex\PDFMerger\Providers\PDFMergerServiceProvider::class
+],
+
+'aliases' => [
+    ...
+    'PDFMerger' => Webklex\PDFMerger\Facades\PDFMergerFacade::class
+]
