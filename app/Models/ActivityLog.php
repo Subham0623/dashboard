@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActivityLog extends Model
 {
-    use HasFactory;
+
+    use HasFactory, SoftDeletes  ;
+    protected $dates = ['deleted_at'];
+
+
     protected $fillable = [
         'user_id',
-        'email',
         'request_type',
         'ip_address',
         'geo_location',
@@ -18,12 +23,17 @@ class ActivityLog extends Model
         'activity_type',
         'url',
         'changed_id',
-        'data',
+        'old_data',
+        'new_data',
+        'deleted_data',
     ];
 
     protected $casts = [
-        'geo_location' => 'array',
-        'data' => 'array',
+        'geo_location' => 'json',
+        'changed_id' => 'json',
+        'old_data' => 'json',
+        'new_data' => 'json',
+        'deleted_data' => 'json',
     ];
 
     public function user()
